@@ -1,0 +1,65 @@
+apply plugin: 'com.android.model.application'
+
+model {
+    android {
+        compileSdkVersion = 22
+        buildToolsVersion = "23.0.0 rc3"
+
+        defaultConfig.with {
+            applicationId = "io.realm.stacksize"
+            minSdkVersion.apiLevel = 10
+            targetSdkVersion.apiLevel = 22
+            versionCode = 1
+            versionName = "1.0"
+
+            buildConfigFields.with {
+                create() {
+                    type = "int"
+                    name = "VALUE"
+                    value = "1"
+                }
+            }
+        }
+    }
+
+    android.ndk {
+        moduleName = "native"
+
+        toolchain = "clang"
+        toolchainVersion = "3.5"
+        // Note that CFlags has a capital C, which is inconsistent with
+        // the naming convention of other properties.  This is a
+        // technical limitation that will be resolved
+        CFlags += "-g"
+        cppFlags += "-g"
+        ldLibs += "log"
+    }
+
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles += file('proguard-rules.pro')
+        }
+    }
+
+    // Configures source set directory.
+    android.sources {
+        main {
+            java {
+                source {
+                    srcDir 'src'
+                }
+                jni {
+                    source {
+                        srcDir 'src'
+                    }
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.2.1'
+}
